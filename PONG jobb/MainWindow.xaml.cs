@@ -26,6 +26,7 @@ namespace PongGame
         }
 
         static double initialSpeed = 5;
+        static double gyorsulas = 1.1;
 
         private double _angle = 155;
         private double _speed = initialSpeed;
@@ -37,14 +38,14 @@ namespace PongGame
 
 
             if ((Keyboard.IsKeyDown(Key.W)) && (_leftPad.YPosition > 0))
-                _leftPad.YPosition -= _padSpeed;
+                _leftPad.MoveUp(_padSpeed);
             if ((Keyboard.IsKeyDown(Key.S)) && (_leftPad.YPosition < MainCanvas.ActualHeight - LeftPad.ActualHeight))
-                _leftPad.YPosition += _padSpeed;
+                _leftPad.MoveDown(_padSpeed);
             if ((Keyboard.IsKeyDown(Key.Up)) && (_rightPad.YPosition > 0))
-                _rightPad.YPosition -= _padSpeed;
+                _leftPad.MoveUp(_padSpeed);
             if ((Keyboard.IsKeyDown(Key.Down)) && (_rightPad.YPosition < MainCanvas.ActualHeight - RightPad.ActualHeight))
-                _rightPad.YPosition += _padSpeed;
-            
+                _leftPad.MoveDown(_padSpeed);
+
 
 
 
@@ -109,7 +110,7 @@ namespace PongGame
         private void ChangeDirection()
         {
             _ball.MovingRight = !_ball.MovingRight;
-            _speed *= 1.1;
+            _speed *= gyorsulas;
         }
 
         private bool CheckCollision()
@@ -125,10 +126,10 @@ namespace PongGame
         }
 
 
-        readonly Ball _ball = new Ball { X = 400, Y = 235, MovingRight = true };
+        readonly Ball _ball = new Ball { X = 400, Y = 200, MovingRight = true };
 
-        readonly Pad _leftPad = new Pad { YPosition = 90 };
-        readonly Pad _rightPad = new Pad { YPosition = 70 };
+        Pad _leftPad = new Pad { YPosition = 200 };
+        readonly Pad _rightPad = new Pad { YPosition = 200 };
 
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
