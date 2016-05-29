@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 //using PongGame.Annotations;
@@ -29,29 +29,5 @@ namespace PongGame
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void MoveDown(int amount)
-        {
-            if (IsValidPosition(YPosition + amount))
-            {
-                YPosition += amount;
-            }
-        }
-        public void MoveUp(int amount)
-        {
-            MoveDown(-amount);
-        }
-        private bool IsValidPosition(int newPosition)
-        {
-            int rectHeight = 80;
-            int canvasHeight = 475;
-
-            if (newPosition < 0)
-                return false;
-            if (newPosition + rectHeight > canvasHeight)
-                return false;
-
-            return true;
-        }
-
-    }
+   }
 }
