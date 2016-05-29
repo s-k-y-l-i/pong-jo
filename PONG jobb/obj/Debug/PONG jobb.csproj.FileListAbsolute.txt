@@ -1,0 +1,13 @@
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\bin\Debug\PONG jó.exe.config
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\obj\Debug\PONG jó.exe
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\obj\Debug\PONG jó.pdb
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\bin\Debug\PONG jó.exe
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\bin\Debug\PONG jó.pdb
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\obj\Debug\PONG jobb.csprojResolveAssemblyReference.cache
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\obj\Debug\MainWindow.baml
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\obj\Debug\MainWindow.g.cs
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\obj\Debug\App.g.cs
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\obj\Debug\PONG jó_MarkupCompile.cache
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\obj\Debug\PONG jó.g.resources
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\obj\Debug\PONG_jó.Properties.Resources.resources
+C:\Users\Tormi\Desktop\PONG jó\PONG jó\obj\Debug\PONG jobb.csproj.GenerateResource.Cache
