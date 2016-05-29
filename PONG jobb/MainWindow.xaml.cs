@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -19,19 +19,37 @@ namespace PongGame
             
 
             var timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(10);
+            timer.Interval = TimeSpan.FromMilliseconds(1);
             timer.Start();
             timer.Tick += _timer_Tick;
             MessageBox.Show("Click to play Game");
         }
 
+        static double initialSpeed = 5;
+
         private double _angle = 155;
-        private double _speed = 5;
-        private int _padSpeed = 60;
+        private double _speed = initialSpeed;
+        private int _padSpeed = 10;
         void _timer_Tick(object sender, EventArgs e)
         {
 
             GameEnd();
+
+
+            if ((Keyboard.IsKeyDown(Key.W)) && (_leftPad.YPosition > 0))
+                _leftPad.YPosition -= _padSpeed;
+            if ((Keyboard.IsKeyDown(Key.S)) && (_leftPad.YPosition < MainCanvas.ActualHeight - LeftPad.ActualHeight))
+                _leftPad.YPosition += _padSpeed;
+            if ((Keyboard.IsKeyDown(Key.Up)) && (_rightPad.YPosition > 0))
+                _rightPad.YPosition -= _padSpeed;
+            if ((Keyboard.IsKeyDown(Key.Down)) && (_rightPad.YPosition < MainCanvas.ActualHeight - RightPad.ActualHeight))
+                _rightPad.YPosition += _padSpeed;
+            
+
+
+
+
+
             if (_ball.Y <= 0) _angle = _angle + (180 - 2 * _angle);
             if (_ball.Y >= MainCanvas.ActualHeight - 20) _angle = _angle + (180 - 2 * _angle);
 
@@ -48,13 +66,11 @@ namespace PongGame
             if (_ball.X >= 800)
             {
                 _ball.LeftResult += 1;
-                _speed += 0.5;
                 GameReset();
             }
             if (_ball.X <= 0)
             {
                 _ball.RightResult += 1;
-                _speed += 0.5;
                 GameReset();
             }
         }
@@ -62,6 +78,8 @@ namespace PongGame
         {
             _ball.Y = 210;
             _ball.X = 380;
+            _speed = initialSpeed;
+
         }
         private void GameEnd()
         {
@@ -90,8 +108,8 @@ namespace PongGame
 
         private void ChangeDirection()
         {
-            if (_ball.MovingRight == true) _ball.MovingRight = false;
-            else if (_ball.MovingRight == false) _ball.MovingRight = true;
+            _ball.MovingRight = !_ball.MovingRight;
+            _speed *= 1.1;
         }
 
         private bool CheckCollision()
@@ -115,14 +133,14 @@ namespace PongGame
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            switch(e.Key)
-            {
-                case Key.W: _leftPad.MoveUp(_padSpeed); break;
-                case Key.S: _leftPad.MoveDown(_padSpeed); break;
+           // switch(e.Key)
+           // {
+           //     case Key.W: _leftPad.MoveUp(_padSpeed); break;
+           //     case Key.S: _leftPad.MoveDown(_padSpeed); break;
 
-                case Key.Up: _rightPad.MoveUp(_padSpeed); break;
-                case Key.Down: _rightPad.MoveDown(_padSpeed); break;
-            }
+           //     case Key.Up: _rightPad.MoveUp(_padSpeed); break;
+           //     case Key.Down: _rightPad.MoveDown(_padSpeed); break;
+           // }
         }
         private void Scores()
         {
