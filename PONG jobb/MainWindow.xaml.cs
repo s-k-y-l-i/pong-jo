@@ -26,29 +26,27 @@ namespace PongGame
         }
 
         static double initialSpeed = 5;
-        static double gyorsulas = 1.1;
+        static double initialPadSpeed = 10;
+        static double acceleration = 1.1;
+        static double padAcceleration = 1.02;
 
         private double _angle = 155;
         private double _speed = initialSpeed;
-        private int _padSpeed = 10;
+        private double _padSpeed = initialPadSpeed;
         void _timer_Tick(object sender, EventArgs e)
+
         {
 
             GameEnd();
 
-
-            if ((Keyboard.IsKeyDown(Key.W)) && (_leftPad.YPosition > 0))
-                _leftPad.MoveUp(_padSpeed);
+            if ((Keyboard.IsKeyDown(Key.W)) && (_leftPad.YPosition >= 0))
+                _leftPad.YPosition -= (int)_padSpeed;
             if ((Keyboard.IsKeyDown(Key.S)) && (_leftPad.YPosition < MainCanvas.ActualHeight - LeftPad.ActualHeight))
-                _leftPad.MoveDown(_padSpeed);
-            if ((Keyboard.IsKeyDown(Key.Up)) && (_rightPad.YPosition > 0))
-                _leftPad.MoveUp(_padSpeed);
+                _leftPad.YPosition += (int)_padSpeed;
+            if ((Keyboard.IsKeyDown(Key.Up)) && (_rightPad.YPosition >= 0))
+                _rightPad.YPosition -= (int)_padSpeed;
             if ((Keyboard.IsKeyDown(Key.Down)) && (_rightPad.YPosition < MainCanvas.ActualHeight - RightPad.ActualHeight))
-                _leftPad.MoveDown(_padSpeed);
-
-
-
-
+                _rightPad.YPosition += (int)_padSpeed;
 
 
             if (_ball.Y <= 0) _angle = _angle + (180 - 2 * _angle);
@@ -59,6 +57,7 @@ namespace PongGame
                 ChangeAngle();
                 ChangeDirection();
             }
+
             double radians = (Math.PI / 180) * _angle;
             Vector vector = new Vector { X = Math.Sin(radians), Y = -Math.Cos(radians) };
             _ball.X += vector.X * _speed;
@@ -80,8 +79,9 @@ namespace PongGame
             _ball.Y = 210;
             _ball.X = 380;
             _speed = initialSpeed;
-
+            _padSpeed = initialPadSpeed;
         }
+
         private void GameEnd()
         {
             if (_ball.LeftResult == 11 || _ball.RightResult == 11)
@@ -90,17 +90,17 @@ namespace PongGame
 
                 if (_ball.LeftResult > _ball.RightResult)
                 {
-                    MessageBox.Show("Player 1 Win");
+                    MessageBox.Show("Player 1 Won");
                     this.Close();
                 }
                 if (_ball.LeftResult < _ball.RightResult)
                 {
-                    MessageBox.Show("Player 2 Win");
+                    MessageBox.Show("Player 2 Won");
                     this.Close();
                 }
             }
-
         }
+
         private void ChangeAngle()
         {
             if (_ball.MovingRight == true) _angle = 270 - ((_ball.Y + 20) - (_rightPad.YPosition + 60));
@@ -110,7 +110,8 @@ namespace PongGame
         private void ChangeDirection()
         {
             _ball.MovingRight = !_ball.MovingRight;
-            _speed *= gyorsulas;
+            _speed *= acceleration;
+            _padSpeed *= padAcceleration;
         }
 
         private bool CheckCollision()
@@ -128,7 +129,7 @@ namespace PongGame
 
         readonly Ball _ball = new Ball { X = 400, Y = 200, MovingRight = true };
 
-        Pad _leftPad = new Pad { YPosition = 200 };
+        readonly Pad _leftPad = new Pad { YPosition = 200 };
         readonly Pad _rightPad = new Pad { YPosition = 200 };
 
 
@@ -143,6 +144,7 @@ namespace PongGame
            //     case Key.Down: _rightPad.MoveDown(_padSpeed); break;
            // }
         }
+
         private void Scores()
         {
             FileStream fs = new FileStream("Pontokjo.txt", FileMode.Append);
@@ -151,7 +153,6 @@ namespace PongGame
             sr.Close();
             fs.Close();
         }
-
 
     }
 }
