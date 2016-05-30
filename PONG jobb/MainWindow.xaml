@@ -2,27 +2,38 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:system="clr-namespace:System;assembly=System"
         KeyDown="Window_KeyDown"
-        Title="MainWindow" Height="503" Width="824" ResizeMode="NoResize">
-    <Canvas Width="800" Height="475" Name="MainCanvas" Background="#FF426C10">
+        Title="MainWindow" Height="503" Width="824" ResizeMode="CanResizeWithGrip">
+   
+    
 
-        <Rectangle Height="80" Width="20"
+
+
+
+        <Canvas Name="MainCanvas" Background="#FF426C10" Margin="8,0">
+
+            <Rectangle
                    Canvas.Top="{Binding YPosition}"
 
-                   Name="LeftPad" Fill="White"/>
-        <Rectangle Height="80" Width="20" 
+                   Name="LeftPad" Fill="White" Width="20" Height="90" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Rectangle Height="88" Width="20" 
                    Canvas.Top="{Binding YPosition}"
-                   Name="RightPad" Canvas.Left="764" Fill="White"/>
-        <Line X1="400" X2="400" Y2="500" Y1="0" StrokeThickness="2" Stroke="White"></Line>
-        <Ellipse Width="20" Height="20" Canvas.Left="{Binding X}"
-                 Canvas.Top="{Binding Y}" Name="Ball" DataContext="{Binding Path=ball}" StrokeThickness="0.1" Fill="White">
+                   Canvas.Right="0"
+                   Name="RightPad" Fill="White" HorizontalAlignment="Right" VerticalAlignment="Top"/>
 
-        </Ellipse>
-        <Label Canvas.Left="349" Canvas.Top="35" Content="{Binding LeftResult}" Height="auto" Name="label10" 
-               FontSize="40" Foreground="White" />
-        <Label Canvas.Left="421" Canvas.Top="35" Content="{Binding RightResult}" Height="auto" Name="label11" 
-               FontSize="40" Foreground="White"/>
-        <Label Content="Player 1" Canvas.Left="319" Canvas.Top="17" Foreground="White" RenderTransformOrigin="1.125,0.385"/>
-        <Label Content="Player 2" Canvas.Left="410" Canvas.Top="17" Foreground="White"/>
+            <Ellipse Width="20" Height="20" Canvas.Left="{Binding X}"
+                 Canvas.Top="{Binding Y}" Name="Ball" DataContext="{Binding Path=ball}" StrokeThickness="0.1" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+            </Ellipse>
+
+        <Grid Width="{Binding ActualWidth, ElementName=MainCanvas, Mode=OneWay}" Loaded="Grid_Loaded">
+            <Rectangle  Stroke="White" StrokeThickness="2"  Width="2" Height="4000" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Panel.ZIndex="10"/>
+            <Label Content="Player 1" Canvas.Left="319" Canvas.Top="17" Foreground="White" RenderTransformOrigin="1.125,0.385" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,70,0" FontSize="16"/>
+            <Label Content="Player 2" Canvas.Left="410" Canvas.Top="17" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="70,0,0,0" FontSize="16"/>
+            <Label Canvas.Left="349" Canvas.Top="35" Content="{Binding LeftResult}" Height="auto" Name="label10" 
+               FontSize="40" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,50,0" />
+            <Label Canvas.Left="421" Canvas.Top="35" Content="{Binding RightResult}" Height="auto" Name="label11" 
+               FontSize="40" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="50,20,0,0"/>
+        </Grid>
 
     </Canvas>
 </Window>
