@@ -44,6 +44,7 @@ namespace PongGame
 
             GameEnd();
 
+            //Irányítás W S FEL LE
             if ((Keyboard.IsKeyDown(Key.W)) && (_leftPad.YPosition >= 0))
                 _leftPad.YPosition -= (int)_padSpeed;
             if ((Keyboard.IsKeyDown(Key.S)) && (_leftPad.YPosition < MainCanvas.ActualHeight - LeftPad.ActualHeight))
@@ -53,11 +54,11 @@ namespace PongGame
             if ((Keyboard.IsKeyDown(Key.Down)) && (_rightPad.YPosition < MainCanvas.ActualHeight - RightPad.ActualHeight))
                 _rightPad.YPosition += (int)_padSpeed;
 
-
+            //Labda pattanása a felső és az alsó falon
             if (_ball.Y <= 0) _angle = _angle + (180 - 2 * _angle);
             if (_ball.Y >= MainCanvas.ActualHeight - Ball.Width) _angle = _angle + (180 - 2 * _angle);
 
-            if (CheckCollision() == true)
+            if (CheckCollision() == true) //ha ütközik a pad a labdával
             {
                 ChangeAngle();
                 ChangeDirection();
@@ -68,6 +69,7 @@ namespace PongGame
             _ball.X += vector.X * _speed;
             _ball.Y += vector.Y * _speed;
 
+            //új kör, ha a labda kimegy a pályáról + pontszerzés
             if (_ball.X >= MainCanvas.ActualWidth)
             {
                 _ball.LeftResult += 1;
@@ -79,7 +81,7 @@ namespace PongGame
                 GameReset();
             }
         }
-        private void GameReset()
+        private void GameReset() //új kör
         {
             _ball.Y = MainCanvas.ActualHeight / 2;
             _ball.X = MainCanvas.ActualWidth / 2;
@@ -87,7 +89,7 @@ namespace PongGame
             _padSpeed = initialPadSpeed;
         }
 
-        private void GameEnd()
+        private void GameEnd() //játék vége
         {
             if (_ball.LeftResult == 11 || _ball.RightResult == 11)
             {
@@ -106,50 +108,34 @@ namespace PongGame
             }
         }
 
-        private void ChangeAngle()
+        private void ChangeAngle() //szögváltás - Visszapattanási szög attól függően, hogy hol éri a padot a labda
         {
             if (_ball.MovingRight == true) _angle = 270 - ((_ball.Y + ballSize) - (_rightPad.YPosition + RightPad.ActualHeight / 2));
             else if (_ball.MovingRight == false) _angle = 90 + ((_ball.Y + ballSize) - (_leftPad.YPosition + LeftPad.ActualHeight / 2));
         }
 
-        private void ChangeDirection()
+        private void ChangeDirection() //irányváltás - amikor jobb vagy baloldalt pattan a labda a padon
         {
             _ball.MovingRight = !_ball.MovingRight;
-            _speed *= acceleration;
-            _padSpeed *= padAcceleration;
+            _speed *= acceleration; //növeli a labda sebességét
+            _padSpeed *= padAcceleration; //növeli a pad mozgatásának sebességét
         }
 
-        private bool CheckCollision()
+        private bool CheckCollision() //ütközik -e a labda a paddal?
         {
             bool collisionResult = false;
             if (_ball.MovingRight == true)
                 collisionResult = _ball.X >= MainCanvas.ActualWidth - padWidth - ballSize && (_ball.Y > _rightPad.YPosition - ballSize  && _ball.Y < _rightPad.YPosition + RightPad.ActualHeight );
-
             if (_ball.MovingRight == false)
                 collisionResult = _ball.X <= padWidth && (_ball.Y > _leftPad.YPosition - ballSize && _ball.Y < _leftPad.YPosition + LeftPad.ActualHeight );
-
             return collisionResult;
         }
-
-
+        
         readonly Ball _ball = new Ball { X = windowWidth / 2, Y = windowHeight / 2, MovingRight = true };
-
         readonly Pad _leftPad = new Pad { YPosition = (int)windowHeight / 2 };
         readonly Pad _rightPad = new Pad { YPosition = (int)windowHeight / 2 };
 
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            // switch(e.Key)
-            // {
-            //     case Key.W: _leftPad.MoveUp(_padSpeed); break;
-            //     case Key.S: _leftPad.MoveDown(_padSpeed); break;
-
-            //     case Key.Up: _rightPad.MoveUp(_padSpeed); break;
-            //     case Key.Down: _rightPad.MoveDown(_padSpeed); break;
-            // }
-        }
-
+        //pontok mentése
         private void Scores()
         {
             FileStream fs = new FileStream("Pontokjo.txt", FileMode.Append);
@@ -159,6 +145,7 @@ namespace PongGame
             fs.Close();
         }
 
+        //labda középről indulásához és a pontok 0-ról indulásához
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             _ball.LeftResult = 0;
