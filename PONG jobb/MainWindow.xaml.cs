@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -16,19 +16,24 @@ namespace PongGame
             RightPad.DataContext = _rightPad;
             LeftPad.DataContext = _leftPad;
             Ball.DataContext = _ball;
+            windowHeight = MainCanvas.ActualHeight;
+            windowWidth = MainCanvas.ActualWidth;
             
-
             var timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(1);
             timer.Start();
             timer.Tick += _timer_Tick;
             MessageBox.Show("Click to play Game");
         }
-
+        
+        static int padWidth = 20;
+        static int ballSize = 20;
         static double initialSpeed = 5;
         static double initialPadSpeed = 10;
         static double acceleration = 1.1;
         static double padAcceleration = 1.02;
+        static double windowWidth;
+        static double windowHeight;
 
         private double _angle = 155;
         private double _speed = initialSpeed;
@@ -50,7 +55,7 @@ namespace PongGame
 
 
             if (_ball.Y <= 0) _angle = _angle + (180 - 2 * _angle);
-            if (_ball.Y >= MainCanvas.ActualHeight - 20) _angle = _angle + (180 - 2 * _angle);
+            if (_ball.Y >= MainCanvas.ActualHeight - Ball.Width) _angle = _angle + (180 - 2 * _angle);
 
             if (CheckCollision() == true)
             {
@@ -63,7 +68,7 @@ namespace PongGame
             _ball.X += vector.X * _speed;
             _ball.Y += vector.Y * _speed;
 
-            if (_ball.X >= 800)
+            if (_ball.X >= MainCanvas.ActualWidth)
             {
                 _ball.LeftResult += 1;
                 GameReset();
@@ -76,8 +81,8 @@ namespace PongGame
         }
         private void GameReset()
         {
-            _ball.Y = 210;
-            _ball.X = 380;
+            _ball.Y = MainCanvas.ActualHeight / 2;
+            _ball.X = MainCanvas.ActualWidth / 2;
             _speed = initialSpeed;
             _padSpeed = initialPadSpeed;
         }
@@ -86,7 +91,7 @@ namespace PongGame
         {
             if (_ball.LeftResult == 11 || _ball.RightResult == 11)
             {
-                Scores();     
+                Scores();
 
                 if (_ball.LeftResult > _ball.RightResult)
                 {
@@ -103,8 +108,8 @@ namespace PongGame
 
         private void ChangeAngle()
         {
-            if (_ball.MovingRight == true) _angle = 270 - ((_ball.Y + 20) - (_rightPad.YPosition + 60));
-            else if (_ball.MovingRight == false) _angle = 90 + ((_ball.Y + 20) - (_leftPad.YPosition + 60));
+            if (_ball.MovingRight == true) _angle = 270 - ((_ball.Y + ballSize) - (_rightPad.YPosition + RightPad.ActualHeight / 2));
+            else if (_ball.MovingRight == false) _angle = 90 + ((_ball.Y + ballSize) - (_leftPad.YPosition + LeftPad.ActualHeight / 2));
         }
 
         private void ChangeDirection()
@@ -118,31 +123,31 @@ namespace PongGame
         {
             bool collisionResult = false;
             if (_ball.MovingRight == true)
-                collisionResult = _ball.X >= 760 && (_ball.Y > _rightPad.YPosition - 40 && _ball.Y < _rightPad.YPosition + 120);
+                collisionResult = _ball.X >= MainCanvas.ActualWidth - padWidth - ballSize && (_ball.Y > _rightPad.YPosition - ballSize  && _ball.Y < _rightPad.YPosition + RightPad.ActualHeight );
 
             if (_ball.MovingRight == false)
-                collisionResult = _ball.X <= 20 && (_ball.Y > _leftPad.YPosition - 40 && _ball.Y < _leftPad.YPosition + 120);
+                collisionResult = _ball.X <= padWidth && (_ball.Y > _leftPad.YPosition - ballSize && _ball.Y < _leftPad.YPosition + LeftPad.ActualHeight );
 
             return collisionResult;
         }
 
 
-        readonly Ball _ball = new Ball { X = 400, Y = 200, MovingRight = true };
+        readonly Ball _ball = new Ball { X = windowWidth / 2, Y = windowHeight / 2, MovingRight = true };
 
-        readonly Pad _leftPad = new Pad { YPosition = 200 };
-        readonly Pad _rightPad = new Pad { YPosition = 200 };
+        readonly Pad _leftPad = new Pad { YPosition = (int)windowHeight / 2 };
+        readonly Pad _rightPad = new Pad { YPosition = (int)windowHeight / 2 };
 
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-           // switch(e.Key)
-           // {
-           //     case Key.W: _leftPad.MoveUp(_padSpeed); break;
-           //     case Key.S: _leftPad.MoveDown(_padSpeed); break;
+            // switch(e.Key)
+            // {
+            //     case Key.W: _leftPad.MoveUp(_padSpeed); break;
+            //     case Key.S: _leftPad.MoveDown(_padSpeed); break;
 
-           //     case Key.Up: _rightPad.MoveUp(_padSpeed); break;
-           //     case Key.Down: _rightPad.MoveDown(_padSpeed); break;
-           // }
+            //     case Key.Up: _rightPad.MoveUp(_padSpeed); break;
+            //     case Key.Down: _rightPad.MoveDown(_padSpeed); break;
+            // }
         }
 
         private void Scores()
@@ -154,5 +159,11 @@ namespace PongGame
             fs.Close();
         }
 
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            _ball.LeftResult = 0;
+            _ball.RightResult = 0;
+            GameReset();
+        }
     }
 }
