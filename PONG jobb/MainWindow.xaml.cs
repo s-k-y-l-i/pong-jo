@@ -1,169 +1,34 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Threading;
-using System.IO;
+<Window x:Class="PongGame.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:system="clr-namespace:System;assembly=System"
+        KeyDown="Window_KeyDown"
+        Title="MainWindow" Height="503" Width="824" ResizeMode="CanResizeWithGrip">
+   
+        <Canvas Name="MainCanvas" Background="#FF426C10" Margin="8,0">
+            <!--Bal oldali pad-->
+            <Rectangle
+                   Canvas.Top="{Binding YPosition}"
+                   Name="LeftPad" Fill="White" Width="20" Height="90" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <!--Jobb oldali pad-->
+            <Rectangle Height="88" Width="20" 
+                   Canvas.Top="{Binding YPosition}"
+                   Canvas.Right="0"
+                   Name="RightPad" Fill="White" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+            <!--Labda-->
+            <Ellipse Width="20" Height="20" Canvas.Left="{Binding X}"
+                 Canvas.Top="{Binding Y}" Name="Ball" DataContext="{Binding Path=ball}" StrokeThickness="0.1" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Top">
 
-namespace PongGame
-{
+            </Ellipse>
+            <!--Pontok, felezővonal, játékosnevek-->
+            <Grid Width="{Binding ActualWidth, ElementName=MainCanvas, Mode=OneWay}" Loaded="Grid_Loaded">
+                <Rectangle  Stroke="White" StrokeThickness="2"  Width="2" Height="4000" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Panel.ZIndex="10"/>
+                <Label Content="Player 1" Canvas.Left="319" Canvas.Top="17" Foreground="White" RenderTransformOrigin="1.125,0.385" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,70,0" FontSize="16"/>
+                <Label Content="Player 2" Canvas.Left="410" Canvas.Top="17" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="70,0,0,0" FontSize="16"/>
+                <Label Canvas.Left="349" Canvas.Top="35" Content="{Binding LeftResult}" Height="auto" Name="label10" 
+                   FontSize="40" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,50,0" />
+                <Label Canvas.Left="421" Canvas.Top="35" Content="{Binding RightResult}" Height="auto" Name="label11" 
+                   FontSize="40" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="50,20,0,0"/>
+            </Grid>
 
-    public partial class MainWindow
-    {
-        public MainWindow()
-        {
-            InitializeComponent();
-            DataContext = _ball;
-            RightPad.DataContext = _rightPad;
-            LeftPad.DataContext = _leftPad;
-            Ball.DataContext = _ball;
-            windowHeight = MainCanvas.ActualHeight;
-            windowWidth = MainCanvas.ActualWidth;
-            
-            var timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1);
-            timer.Start();
-            timer.Tick += _timer_Tick;
-            MessageBox.Show("Click to play Game");
-        }
-        
-        static int padWidth = 20;
-        static int ballSize = 20;
-        static double initialSpeed = 5;
-        static double initialPadSpeed = 10;
-        static double acceleration = 1.1;
-        static double padAcceleration = 1.02;
-        static double windowWidth;
-        static double windowHeight;
-
-        private double _angle = 155;
-        private double _speed = initialSpeed;
-        private double _padSpeed = initialPadSpeed;
-        void _timer_Tick(object sender, EventArgs e)
-
-        {
-
-            GameEnd();
-
-            if ((Keyboard.IsKeyDown(Key.W)) && (_leftPad.YPosition >= 0))
-                _leftPad.YPosition -= (int)_padSpeed;
-            if ((Keyboard.IsKeyDown(Key.S)) && (_leftPad.YPosition < MainCanvas.ActualHeight - LeftPad.ActualHeight))
-                _leftPad.YPosition += (int)_padSpeed;
-            if ((Keyboard.IsKeyDown(Key.Up)) && (_rightPad.YPosition >= 0))
-                _rightPad.YPosition -= (int)_padSpeed;
-            if ((Keyboard.IsKeyDown(Key.Down)) && (_rightPad.YPosition < MainCanvas.ActualHeight - RightPad.ActualHeight))
-                _rightPad.YPosition += (int)_padSpeed;
-
-
-            if (_ball.Y <= 0) _angle = _angle + (180 - 2 * _angle);
-            if (_ball.Y >= MainCanvas.ActualHeight - Ball.Width) _angle = _angle + (180 - 2 * _angle);
-
-            if (CheckCollision() == true)
-            {
-                ChangeAngle();
-                ChangeDirection();
-            }
-
-            double radians = (Math.PI / 180) * _angle;
-            Vector vector = new Vector { X = Math.Sin(radians), Y = -Math.Cos(radians) };
-            _ball.X += vector.X * _speed;
-            _ball.Y += vector.Y * _speed;
-
-            if (_ball.X >= MainCanvas.ActualWidth)
-            {
-                _ball.LeftResult += 1;
-                GameReset();
-            }
-            if (_ball.X <= 0)
-            {
-                _ball.RightResult += 1;
-                GameReset();
-            }
-        }
-        private void GameReset()
-        {
-            _ball.Y = MainCanvas.ActualHeight / 2;
-            _ball.X = MainCanvas.ActualWidth / 2;
-            _speed = initialSpeed;
-            _padSpeed = initialPadSpeed;
-        }
-
-        private void GameEnd()
-        {
-            if (_ball.LeftResult == 11 || _ball.RightResult == 11)
-            {
-                Scores();
-
-                if (_ball.LeftResult > _ball.RightResult)
-                {
-                    MessageBox.Show("Player 1 Won");
-                    this.Close();
-                }
-                if (_ball.LeftResult < _ball.RightResult)
-                {
-                    MessageBox.Show("Player 2 Won");
-                    this.Close();
-                }
-            }
-        }
-
-        private void ChangeAngle()
-        {
-            if (_ball.MovingRight == true) _angle = 270 - ((_ball.Y + ballSize) - (_rightPad.YPosition + RightPad.ActualHeight / 2));
-            else if (_ball.MovingRight == false) _angle = 90 + ((_ball.Y + ballSize) - (_leftPad.YPosition + LeftPad.ActualHeight / 2));
-        }
-
-        private void ChangeDirection()
-        {
-            _ball.MovingRight = !_ball.MovingRight;
-            _speed *= acceleration;
-            _padSpeed *= padAcceleration;
-        }
-
-        private bool CheckCollision()
-        {
-            bool collisionResult = false;
-            if (_ball.MovingRight == true)
-                collisionResult = _ball.X >= MainCanvas.ActualWidth - padWidth - ballSize && (_ball.Y > _rightPad.YPosition - ballSize  && _ball.Y < _rightPad.YPosition + RightPad.ActualHeight );
-
-            if (_ball.MovingRight == false)
-                collisionResult = _ball.X <= padWidth && (_ball.Y > _leftPad.YPosition - ballSize && _ball.Y < _leftPad.YPosition + LeftPad.ActualHeight );
-
-            return collisionResult;
-        }
-
-
-        readonly Ball _ball = new Ball { X = windowWidth / 2, Y = windowHeight / 2, MovingRight = true };
-
-        readonly Pad _leftPad = new Pad { YPosition = (int)windowHeight / 2 };
-        readonly Pad _rightPad = new Pad { YPosition = (int)windowHeight / 2 };
-
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            // switch(e.Key)
-            // {
-            //     case Key.W: _leftPad.MoveUp(_padSpeed); break;
-            //     case Key.S: _leftPad.MoveDown(_padSpeed); break;
-
-            //     case Key.Up: _rightPad.MoveUp(_padSpeed); break;
-            //     case Key.Down: _rightPad.MoveDown(_padSpeed); break;
-            // }
-        }
-
-        private void Scores()
-        {
-            FileStream fs = new FileStream("Pontokjo.txt", FileMode.Append);
-            StreamWriter sr = new StreamWriter(fs);
-            sr.WriteLine(" játék eredménye : {0} - {1}", _ball.LeftResult, _ball.RightResult);
-            sr.Close();
-            fs.Close();
-        }
-
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
-        {
-            _ball.LeftResult = 0;
-            _ball.RightResult = 0;
-            GameReset();
-        }
-    }
-}
+    </Canvas>
+</Window>
