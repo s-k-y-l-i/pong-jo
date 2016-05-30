@@ -1,7 +1,6 @@
-<Window x:Class="PongGame.MainWindow"
+﻿<Window x:Class="PongGame.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:system="clr-namespace:System;assembly=System"
-        KeyDown="Window_KeyDown"
         Title="MainWindow" Height="503" Width="824" ResizeMode="CanResizeWithGrip">
    
         <Canvas Name="MainCanvas" Background="#FF426C10" Margin="8,0">
