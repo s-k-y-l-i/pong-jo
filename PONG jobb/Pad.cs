@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Text;
 //using PongGame.Annotations;
@@ -10,6 +10,8 @@ namespace PongGame
     {
         private int _yPosition;
 
+        public double ActualHeight { get; internal set; }
+
         public int YPosition
         {
             get { return _yPosition; }
@@ -17,6 +19,15 @@ namespace PongGame
             {
                 _yPosition = value;
                 OnPropertyChanged("YPosition");
+            }
+        }
+        public int Height
+        {
+            get { return (int)ActualHeight; }
+            set
+            {
+                ActualHeight = value;
+                OnPropertyChanged("Height");
             }
         }
 
