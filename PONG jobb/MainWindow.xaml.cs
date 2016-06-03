@@ -18,12 +18,12 @@ namespace PongGame
             Ball.DataContext = _ball;
             windowHeight = MainCanvas.ActualHeight;
             windowWidth = MainCanvas.ActualWidth;
-            
+
+            MessageBox.Show("Click to play Game");
             var timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(1);
             timer.Start();
             timer.Tick += _timer_Tick;
-            MessageBox.Show("Click to play Game");
         }
         
         static int padWidth = 20;
@@ -38,6 +38,7 @@ namespace PongGame
         private double _angle = 155;
         private double _speed = initialSpeed;
         private double _padSpeed = initialPadSpeed;
+
         void _timer_Tick(object sender, EventArgs e)
 
         {
